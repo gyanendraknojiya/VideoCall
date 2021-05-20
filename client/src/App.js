@@ -12,7 +12,9 @@ import IncomingCallAudio from "./sounds/incomingCall.mp3";
 
 import Peer from "simple-peer";
 
-const socket = io("http://localhost:5000");
+// const socket = io("http://localhost:5000");
+const socket = io("https://gyanendra9.herokuapp.com/");
+
 
 function App() {
   let userName = useSelector((state) => state.user.userName);
@@ -175,7 +177,6 @@ function App() {
         // Some browsers just don't implement it - return a rejected promise with an error
         // to keep a consistent interface
         if (!getUserMedia) {
-          alert("jhbj")
           return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
         }
     
