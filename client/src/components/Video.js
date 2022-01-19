@@ -2,21 +2,20 @@ import {
   faCopy,
   faMicrophone,
   faMicrophoneSlash,
-  faPhone,
   faPhoneAlt,
   faPhoneSlash,
   faVideo,
   faVideoSlash,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useEffect, useRef } from "react";
-import "./style.css";
-import "./style.scss";
-import { setUserName } from "../Redux/Reducer";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState } from 'react';
+import './style.css';
+import './style.scss';
+import { setUserName } from '../Redux/Reducer';
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from 'react-redux';
 
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const Video = ({
   callUser,
@@ -30,11 +29,12 @@ const Video = ({
   LeaveCall,
   shareScreen,
 }) => {
-  const [userToCallId, setUserToCallId] = useState("");
+  const [userToCallId, setUserToCallId] = useState('');
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
 
-  const state = useSelector((state) => state);
+  const userName = useSelector((state) => state.user.userName);
+
   const dispatch = useDispatch();
 
   const ToggleVideo = () => {
@@ -52,39 +52,40 @@ const Video = ({
       <div
         className=" display-4  text-center  text-white position-absolute rounded border  p-2 w-50"
         style={{
-          top: "15px",
+          top: '15px',
         }}
       >
-        <FontAwesomeIcon icon={faVideo} /> Video Chat
+        <FontAwesomeIcon icon={faVideo} />
+        Video Chat
       </div>
       <div className="row w-100">
-        <div className="col-md-6 mx-auto mt-5 pt-5 text-center ">
+        <div className="col-md-6 mx-auto py-5 text-center ">
           <video
             ref={videoRef}
             autoPlay
             muted
             className="border rounded-lg bg-light"
             style={{
-              height: "auto",
-              width: "100%",
-              maxWidth: "350px",
-              maxHeight: "200px",
-              objectFit: "cover",
+              height: 'auto',
+              width: '100%',
+              maxWidth: '350px',
+              maxHeight: '200px',
+              objectFit: 'cover',
             }}
           />
         </div>
         {isCallAccepted && (
-          <div className="col-md-6 mx-auto mt-5 pt-5 text-center ">
+          <div className="col-md-6 mx-auto  py-5 text-center ">
             <video
               ref={userVideoRef}
               autoPlay
               className="border rounded-lg bg-light"
               style={{
-                height: "auto",
-                width: "100%",
-                maxWidth: "500px",
-                maxHeight: "300px",
-                objectFit: "cover",
+                height: 'auto',
+                width: '100%',
+                maxWidth: '500px',
+                maxHeight: '300px',
+                objectFit: 'cover',
               }}
             />
           </div>
@@ -103,8 +104,8 @@ const Video = ({
                     />
                   </div>
                   <CopyToClipboard text={myUserId}>
-                    <button className="btn btn-primary btn-sm border btn-block">
-                      <FontAwesomeIcon icon={faCopy} /> copy your call ID
+                    <button className="btn btn-primary btn-sm border btn-block" disabled={!userName}>
+                      <FontAwesomeIcon icon={faCopy} /> Copy your call ID
                     </button>
                   </CopyToClipboard>
                 </div>
@@ -122,17 +123,11 @@ const Video = ({
                     />
                   </div>
                   {calling ? (
-                    <button
-                      className="btn btn-danger btn-sm border btn-block"
-                      onClick={cancelCall}
-                    >
+                    <button className="btn btn-danger btn-sm border btn-block" onClick={cancelCall}>
                       <FontAwesomeIcon icon={faPhoneSlash} /> Cancel
                     </button>
                   ) : (
-                    <button
-                      className="btn btn-primary btn-sm border btn-block"
-                      onClick={() => callUser(userToCallId)}
-                    >
+                    <button className="btn btn-primary btn-sm border btn-block" onClick={() => callUser(userToCallId)}>
                       <FontAwesomeIcon icon={faPhoneAlt} /> Make a call
                     </button>
                   )}
@@ -146,18 +141,10 @@ const Video = ({
               Leave call
             </button>
             <button className="btn btn-primary mx-1" onClick={ToggleAudio}>
-              {!isAudioMuted ? (
-                <FontAwesomeIcon icon={faMicrophone} />
-              ) : (
-                <FontAwesomeIcon icon={faMicrophoneSlash} />
-              )}
+              {!isAudioMuted ? <FontAwesomeIcon icon={faMicrophone} /> : <FontAwesomeIcon icon={faMicrophoneSlash} />}
             </button>
             <button className="btn btn-primary mx-1" onClick={ToggleVideo}>
-            {!isVideoMuted ? (
-                <FontAwesomeIcon icon={faVideo} />
-              ) : (
-                <FontAwesomeIcon icon={faVideoSlash} />
-              )}
+              {!isVideoMuted ? <FontAwesomeIcon icon={faVideo} /> : <FontAwesomeIcon icon={faVideoSlash} />}
             </button>
             <button className="btn btn-primary mx-1" onClick={shareScreen}>
               Share screen

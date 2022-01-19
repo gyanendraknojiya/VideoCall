@@ -1,28 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 
-import "./App.css";
-import Video from "./components/Video";
+import './App.css';
+import Video from './components/Video';
 
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client';
 
-import { useSelector, useDispatch } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPhoneAlt } from "@fortawesome/free-solid-svg-icons";
-import IncomingCallAudio from "./sounds/incomingCall.mp3";
+import { useSelector, useDispatch } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPhoneAlt } from '@fortawesome/free-solid-svg-icons';
+import IncomingCallAudio from './sounds/incomingCall.mp3';
 
-import Peer from "simple-peer";
+import Peer from 'simple-peer';
 
 // const socket = io("http://localhost:5000");
-const socket = io("https://gyanendra9.herokuapp.com/");
-
+const socket = io('https://gyanendra9.herokuapp.com/');
 
 function App() {
   let userName = useSelector((state) => state.user.userName);
 
-  const [myUserId, setMyUserId] = useState("");
+  const [myUserId, setMyUserId] = useState('');
   const [userCalling, setUserCalling] = useState({});
   const [calling, setCalling] = useState(false);
-  const [stream, setStream] = useState("");
+  const [stream, setStream] = useState('');
   const userVideoRef = useRef(null);
   const peerRef = useRef();
   const [isScreenSharing, setIsScreenSharing] = useState(false);
@@ -30,17 +29,17 @@ function App() {
   const videoRef = useRef(null);
   const [isCallAccepted, setIsCallAccepted] = useState(false);
 
-  const [userToCallId, setUserToCallId] = useState("");
-  const [screenStream, setScreenStream] = useState("")
+  const [userToCallId, setUserToCallId] = useState('');
+  const [screenStream, setScreenStream] = useState('');
 
   const callUser = (userID) => {
     setUserToCallId(userID);
     setCalling(true);
 
     var peer = new Peer({ initiator: true, trickle: false, stream: stream });
-    peer.on("signal", (data) => {
+    peer.on('signal', (data) => {
       console.log(data);
-      socket.emit("callUser", {
+      socket.emit('callUser', {
         from: myUserId,
         to: userID,
         userName,
@@ -50,13 +49,13 @@ function App() {
       });
     });
 
-    peer.on("stream", (currentStream) => {
+    peer.on('stream', (currentStream) => {
       console.log(currentStream);
       userVideoRef.current.srcObject = currentStream;
     });
 
-    socket.on("callAccepted", (data) => {
-      console.log("callAccepted");
+    socket.on('callAccepted', (data) => {
+      console.log('callAccepted');
       setIsCallAccepted(true);
       peer.signal(data.signalData);
     });
@@ -65,7 +64,7 @@ function App() {
   };
 
   const RejectCall = () => {
-    socket.emit("rejectCall", {
+    socket.emit('rejectCall', {
       to: userToCallId,
       from: myUserId,
       isUserCalling: false,
@@ -76,7 +75,7 @@ function App() {
   };
 
   const cancelCall = (userID) => {
-    socket.emit("rejectCall", {
+    socket.emit('rejectCall', {
       to: userToCallId,
       from: myUserId,
       isUserCalling: false,
@@ -93,9 +92,9 @@ function App() {
     setIsCallAccepted(true);
     var peer = new Peer({ initiator: false, trickle: false, stream: stream });
 
-    peer.on("signal", (data) => {
+    peer.on('signal', (data) => {
       console.log(data);
-      socket.emit("answerCall", {
+      socket.emit('answerCall', {
         from: myUserId,
         to: userCalling.from,
         isUserCalling: false,
@@ -104,7 +103,7 @@ function App() {
       });
     });
 
-    peer.on("stream", (currentStream) => {
+    peer.on('stream', (currentStream) => {
       console.log(currentStream);
       userVideoRef.current.srcObject = currentStream;
     });
@@ -132,35 +131,23 @@ function App() {
       navigator.mediaDevices
         .getDisplayMedia({ cursor: true })
         .then((screenStream) => {
-          peerRef.current.replaceTrack(
-            stream.getVideoTracks()[0],
-            screenStream.getVideoTracks()[0],
-            stream
-          );
+          peerRef.current.replaceTrack(stream.getVideoTracks()[0], screenStream.getVideoTracks()[0], stream);
           videoRef.current.srcObject = screenStream;
-          setScreenStream(screenStream)
+          setScreenStream(screenStream);
           screenStream.getTracks()[0].onended = () => {
-            peerRef.current.replaceTrack(
-              screenStream.getVideoTracks()[0],
-              stream.getVideoTracks()[0],
-              stream
-            );
+            peerRef.current.replaceTrack(screenStream.getVideoTracks()[0], stream.getVideoTracks()[0], stream);
             videoRef.current.srcObject = stream;
           };
         })
         .then(() => setIsScreenSharing(true))
         .catch((err) => {
           console.log(err);
-          alert("Unable to share screen");
+          alert('Unable to share screen');
         });
     } else {
-      peerRef.current.replaceTrack(
-        screenStream.getVideoTracks()[0],
-        stream.getVideoTracks()[0],
-        stream
-      );
+      peerRef.current.replaceTrack(screenStream.getVideoTracks()[0], stream.getVideoTracks()[0], stream);
       videoRef.current.srcObject = stream;
-      setIsScreenSharing(false)
+      setIsScreenSharing(false);
     }
   };
 
@@ -169,22 +156,17 @@ function App() {
       navigator.mediaDevices = {};
     }
     if (navigator.mediaDevices.getUserMedia === undefined) {
-      navigator.mediaDevices.getUserMedia = function(constraints) {
-    
-        // First get ahold of the legacy getUserMedia, if present
+      navigator.mediaDevices.getUserMedia = function (constraints) {
         var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-    
-        // Some browsers just don't implement it - return a rejected promise with an error
-        // to keep a consistent interface
+
         if (!getUserMedia) {
           return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
         }
-    
-        // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
-        return new Promise(function(resolve, reject) {
+
+        return new Promise(function (resolve, reject) {
           getUserMedia.call(navigator, constraints, resolve, reject);
         });
-      }
+      };
     }
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -193,20 +175,17 @@ function App() {
         setStream(stream);
       })
       .catch((err) => {
-        console.error("error:", err);
+        console.error('error:', err);
       });
 
-    socket.on("userID", function (data) {
-      console.log(data);
+    socket.on('userID', function (data) {
       setMyUserId(data);
     });
 
-    socket.on("userCalling", (data) => {
-      console.log(data);
+    socket.on('userCalling', (data) => {
       setUserCalling({ ...data });
     });
-    socket.on("callRejected", (data) => {
-      console.log(data);
+    socket.on('callRejected', (data) => {
       setCalling(false);
       setIsCallAccepted(false);
     });
@@ -227,15 +206,9 @@ function App() {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  <FontAwesomeIcon icon={faPhoneAlt} /> {userCalling.userName}{" "}
-                  is calling...
+                  <FontAwesomeIcon icon={faPhoneAlt} /> {userCalling.userName} is calling...
                 </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -248,11 +221,7 @@ function App() {
                 >
                   Reject
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  onClick={AnswerCall}
-                >
+                <button type="button" className="btn btn-success" onClick={AnswerCall}>
                   Accept
                 </button>
               </div>
