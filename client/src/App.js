@@ -215,7 +215,6 @@ function App() {
                 <h5 className="modal-title" id="exampleModalLabel">
                   <FontAwesomeIcon icon={faPhoneAlt} /> {userCalling.userName || 'Unknown user'} is calling...
                 </h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-footer">
                 <button

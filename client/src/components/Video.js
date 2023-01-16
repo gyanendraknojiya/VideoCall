@@ -101,7 +101,7 @@ const Video = ({
                   </div>
                   <div className="d-grid mt-2">
                     <CopyToClipboard text={myUserId}>
-                      <button className="btn btn-primary btn-sm border btn-block">
+                      <button disabled={!myUserId} className="btn btn-primary btn-sm border btn-block">
                         <FontAwesomeIcon icon={faCopy} /> copy your call ID
                       </button>
                     </CopyToClipboard>
