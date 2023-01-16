@@ -74,7 +74,7 @@ function App() {
     setUserCalling({});
   };
 
-  const cancelCall = (userID) => {
+  const cancelCall = () => {
     socket.emit('rejectCall', {
       to: userToCallId,
       from: myUserId,
@@ -131,19 +131,11 @@ function App() {
       navigator.mediaDevices
         .getDisplayMedia({ cursor: true })
         .then((screenStream) => {
-          peerRef.current.replaceTrack(
-            stream.getVideoTracks()[0],
-            screenStream.getVideoTracks()[0],
-            stream
-          );
+          peerRef.current.replaceTrack(stream.getVideoTracks()[0], screenStream.getVideoTracks()[0], stream);
           videoRef.current.srcObject = screenStream;
           setScreenStream(screenStream);
           screenStream.getTracks()[0].onended = () => {
-            peerRef.current.replaceTrack(
-              screenStream.getVideoTracks()[0],
-              stream.getVideoTracks()[0],
-              stream
-            );
+            peerRef.current.replaceTrack(screenStream.getVideoTracks()[0], stream.getVideoTracks()[0], stream);
             videoRef.current.srcObject = stream;
           };
         })
@@ -153,11 +145,7 @@ function App() {
           alert('Unable to share screen');
         });
     } else {
-      peerRef.current.replaceTrack(
-        screenStream.getVideoTracks()[0],
-        stream.getVideoTracks()[0],
-        stream
-      );
+      peerRef.current.replaceTrack(screenStream.getVideoTracks()[0], stream.getVideoTracks()[0], stream);
       videoRef.current.srcObject = stream;
       setIsScreenSharing(false);
     }
@@ -170,15 +158,12 @@ function App() {
     if (navigator.mediaDevices.getUserMedia === undefined) {
       navigator.mediaDevices.getUserMedia = function (constraints) {
         // First get ahold of the legacy getUserMedia, if present
-        var getUserMedia =
-          navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
         // Some browsers just don't implement it - return a rejected promise with an error
         // to keep a consistent interface
         if (!getUserMedia) {
-          return Promise.reject(
-            new Error('getUserMedia is not implemented in this browser')
-          );
+          return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
         }
 
         // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
@@ -217,43 +202,31 @@ function App() {
     <div>
       {userCalling.isUserCalling && !isCallAccepted && (
         <div
-          className='modal fade show d-block'
-          id='exampleModal'
-          tabIndex='-1'
-          aria-labelledby='exampleModalLabel'
-          aria-hidden='true'
-          data-backdrop='static'
+          className="modal fade show d-block"
+          id="exampleModal"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          data-backdrop="static"
         >
-          <div className='modal-dialog modal-dialog-centered'>
-            <div className='modal-content'>
-              <div className='modal-header'>
-                <h5 className='modal-title' id='exampleModalLabel'>
-                  <FontAwesomeIcon icon={faPhoneAlt} /> {userCalling.userName}{' '}
-                  is calling...
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  <FontAwesomeIcon icon={faPhoneAlt} /> {userCalling.userName || 'Unknown user'} is calling...
                 </h5>
-                <button
-                  type='button'
-                  className='close'
-                  data-dismiss='modal'
-                  aria-label='Close'
-                >
-                  <span aria-hidden='true'>&times;</span>
-                </button>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div className='modal-footer'>
+              <div className="modal-footer">
                 <button
-                  type='button'
-                  className='btn btn-danger'
-                  data-dismiss='modal'
+                  type="button"
+                  className="btn btn-danger"
+                  data-dismiss="modal"
                   onClick={() => RejectCall(userCalling.id)}
                 >
                   Reject
                 </button>
-                <button
-                  type='button'
-                  className='btn btn-success'
-                  onClick={AnswerCall}
-                >
+                <button type="button" className="btn btn-success" onClick={AnswerCall}>
                   Accept
                 </button>
               </div>
